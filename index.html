@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Senin Günün ❤️</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #35152d, #100b16 65%, #08070c);
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+  text-align: center;
+}
+
+.stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.star {
+  position: absolute;
+  color: #ffb9dc;
+  animation: sparkle 3s infinite ease-in-out;
+  opacity: .5;
+}
+
+@keyframes sparkle {
+  0%,100% { opacity: .2; transform: scale(.7); }
+  50% { opacity: 1; transform: scale(1.4); }
+}
+
+.container {
+  position: relative;
+  z-index: 2;
+  width: 90%;
+  max-width: 480px;
+  margin: auto;
+  padding: 85px 0 50px;
+}
+
+.small {
+  color: #f6a8d0;
+  letter-spacing: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: clamp(32px, 9vw, 46px);
+  margin: 22px 0 12px;
+  background: linear-gradient(90deg,#fff,#ff9dce,#fff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+p {
+  color: #d8c2d0;
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+.heart {
+  font-size: 75px;
+  margin: 30px 0;
+  display: inline-block;
+  filter: drop-shadow(0 0 20px #ff4b9b);
+  animation: heartbeat 1.2s infinite;
+}
+
+@keyframes heartbeat {
+  0%,100% { transform: scale(1); }
+  15% { transform: scale(1.2); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.13); }
+}
+
+button {
+  border: 1px solid #ff9bc9;
+  background: linear-gradient(120deg,#e94c98,#9c347e);
+  color: white;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 28px;
+  box-shadow: 0 0 25px #e94c9855;
+  transition: .3s;
+}
+
+button:active {
+  transform: scale(.95);
+}
+
+.section {
+  margin-top: 55px;
+}
+
+.card {
+  background: #ffffff0c;
+  border: 1px solid #ffffff20;
+  border-radius: 20px;
+  padding: 25px 20px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 40px #0005;
+}
+
+.hidden {
+  display: none;
+}
+
+.envelope {
+  font-size: 65px;
+  cursor: pointer;
+  margin: 20px;
+  animation: float 2s infinite ease-in-out;
+}
+
+@keyframes float {
+  50% { transform: translateY(-10px); }
+}
+
+.message {
+  color: #ffe1ef;
+  line-height: 2;
+  font-size: 15px;
+  white-space: pre-line;
+}
+
+.cake {
+  font-size: 85px;
+  margin: 20px;
+  animation: float 2s infinite;
+}
+
+footer {
+  color: #a88b9e;
+  font-size: 12px;
+  margin-top: 60px;
+}
+
+.particle {
+  position: fixed;
+  bottom: -30px;
+  pointer-events: none;
+  z-index: 1;
+  animation: rise 6s linear forwards;
+}
+
+@keyframes rise {
+  to {
+    transform: translateY(-110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Dokununca çıkan küçük kalpler */
+
+.tap-heart {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  color: #ff85bd;
+  font-size: 20px;
+  animation: tapHeartRise 1.5s ease-out forwards;
+  filter: drop-shadow(0 0 7px #ff4b9b);
+  user-select: none;
+}
+
+@keyframes tapHeartRise {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(.5) rotate(0deg);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translate(
+      calc(-50% + var(--x)),
+      calc(-50% - 35px)
+    ) scale(1.2) rotate(20deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(
+      calc(-50% + var(--x)),
+      calc(-50% - 100px)
+    ) scale(.4) rotate(-25deg);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="stars" id="stars"></div>
+
+<main class="container">
+
+  <div class="small">A special day for you</div>
+
+  <h1>İyi ki doğdun ❤️</h1>
+
+  <p>
+    Bugün senin günün.<br>
+    Sana küçük ama özel bir sürprizim var.
+  </p>
+
+  <div class="heart">♥</div>
+
+  <p>
+    Belki her şey daha çok yeni,<br>
+    ama bugün yüzünde güzel bir tebessüm<br>
+    oluşturmak istedim.
+  </p>
+
+  <button onclick="openSurprise()">
+    Sürprizini aç ✨
+  </button>
+
+  <div class="section hidden" id="surprise">
+
+    <div class="card">
+      <div class="small">Sana özel bir mektup</div>
+
+      <div class="envelope" onclick="openLetter()">
+        💌
+      </div>
+
+      <p id="hint">Mektubu açmak için zarfa dokun ❤️</p>
+
+      <div id="letter" class="hidden message">
+        Bugün senin doğum günün...
+
+        Belki birbirimizi tanıyalı çok olmadı,
+        belki henüz anlatacak binlerce anımız yok.
+
+        Ama yine de bu özel gününde
+        yüzünü biraz olsun güldürebilmek istedim.
+
+        Yeni yaşın sana mutluluk,
+        huzur ve birbirinden güzel günler getirsin.
+
+        İyi ki doğdun. ❤️
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="small">One more thing...</div>
+
+      <div class="cake">🎂</div>
+
+      <h1>Nice güzel yaşlarına!</h1>
+
+      <p>
+        Umarım yeni yaşında<br>
+        dilediğin bütün güzellikler seni bulur.
+      </p>
+
+      <div class="heart">♥</div>
+    </div>
+
+  </div>
+
+  <footer>
+    Senin için küçük bir sürprizle hazırlandı ❤️
+  </footer>
+
+</main>
+
+<script>
+
+// Yıldızlar
+const stars = document.getElementById("stars");
+
+for(let i=0;i<45;i++){
+  const star = document.createElement("span");
+  star.className = "star";
+  star.textContent = "✦";
+  star.style.left = Math.random()*100+"%";
+  star.style.top = Math.random()*100+"%";
+  star.style.animationDelay = Math.random()*3+"s";
+  star.style.fontSize = (8+Math.random()*12)+"px";
+  stars.appendChild(star);
+}
+
+// Sürprizi aç
+function openSurprise(){
+  document.getElementById("surprise").classList.remove("hidden");
+  document.querySelector("button").style.display="none";
+
+  document.getElementById("surprise").scrollIntoView({
+    behavior:"smooth"
+  });
+
+  burst();
+}
+
+// Mektubu aç
+function openLetter(){
+  document.getElementById("letter").classList.remove("hidden");
+  document.getElementById("hint").textContent="❤️";
+  burst();
+}
+
+// Yukarı çıkan kalpler
+function burst(){
+  for(let i=0;i<18;i++){
+    const p=document.createElement("div");
+    p.className="particle";
+    p.textContent=["♥","✦","♡","✨"][Math.floor(Math.random()*4)];
+    p.style.left=Math.random()*100+"%";
+    p.style.fontSize=(15+Math.random()*20)+"px";
+    p.style.color="#ff9dce";
+    p.style.animationDuration=(4+Math.random()*3)+"s";
+
+    document.body.appendChild(p);
+
+    setTimeout(()=>p.remove(),7000);
+  }
+}
+
+// Ekranın dokunulan her yerinde küçük kalpler
+document.addEventListener("pointerdown", function(e){
+
+  for(let i=0;i<5;i++){
+
+    const heart=document.createElement("div");
+
+    heart.className="tap-heart";
+
+    heart.textContent=["♥","♡","💕","❤"][
+      Math.floor(Math.random()*4)
+    ];
+
+    heart.style.left=e.clientX+"px";
+    heart.style.top=e.clientY+"px";
+
+    heart.style.setProperty(
+      "--x",
+      (Math.random()*100-50)+"px"
+    );
+
+    heart.style.fontSize=(12+Math.random()*15)+"px";
+
+    document.body.appendChild(heart);
+
+    setTimeout(()=>heart.remove(),1500);
+  }
+
+});
+
+</script>
+
+</body>
+</html>
