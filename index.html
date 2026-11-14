@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -15,9 +14,9 @@
 
 body {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   background: radial-gradient(ellipse at center,
-    #180511 0%, #090309 55%, #030203 100%);
+    #24051b 0%, #0c030b 55%, #030203 100%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -34,7 +33,7 @@ body {
 }
 
 .wrapper {
-  width: min(96vw, 620px);
+  width: min(96vw, 680px);
   position: relative;
   animation: heartbeat 2s ease-in-out infinite;
 }
@@ -65,10 +64,11 @@ canvas {
 }
 
 @keyframes heartbeat {
-  0%,100% { transform: scale(1); }
-  20% { transform: scale(1.025); }
-  40% { transform: scale(1); }
-  60% { transform: scale(1.015); }
+  0%, 100% { transform: scale(1); }
+  15% { transform: scale(1.035); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.02); }
+  60% { transform: scale(1); }
 }
 
 @keyframes nameGlow {
@@ -88,7 +88,6 @@ canvas {
 </div>
 
 <script>
-
 const canvas = document.getElementById("heart");
 const ctx = canvas.getContext("2d");
 
@@ -125,136 +124,106 @@ const words = [
  "Aishiteru"
 ];
 
-// Kalbin geometrisi
-const heart = new Path2D();
+// Gerçek kalp geometrisi
+function insideHeart(x, y) {
+  const px = (x - 300) / 250;
+  const py = (y - 255) / 230;
 
-heart.moveTo(300, 490);
+  const a = px * px + py * py - 1;
 
-heart.bezierCurveTo(
-  245, 430,
-  35, 300,
-  35, 165
-);
-
-heart.bezierCurveTo(
-  35, 55,
-  175, 5,
-  300, 145
-);
-
-heart.bezierCurveTo(
-  425, 5,
-  565, 55,
-  565, 165
-);
-
-heart.bezierCurveTo(
-  565, 300,
-  355, 430,
-  300, 490
-);
-
-heart.closePath();
-
-// Kelimeleri kırpmadan yerleştir
-function drawLine(y, row) {
-
-  const intervals = [];
-  let inside = false;
-  let start = 0;
-
-  // Kalbin o satırdaki dolu bölgelerini bul
-  for (let x = 0; x <= W; x += 2) {
-
-    const current = ctx.isPointInPath(heart, x, y);
-
-    if (current && !inside) {
-      start = x;
-      inside = true;
-    }
-
-    if (!current && inside) {
-      intervals.push([start, x]);
-      inside = false;
-    }
-  }
-
-  if (inside) intervals.push([start, W]);
-
-  // Her bölgeye tam kelimeler yerleştir
-  intervals.forEach(([left, right], part) => {
-
-    const width = right - left;
-
-    if (width < 35) return;
-
-    const fontSize = width < 85 ? 10 : 13;
-
-    ctx.font = `bold ${fontSize}px Arial`;
-
-    const gap = fontSize < 12 ? 7 : 9;
-
-    let currentWords = [];
-    let totalWidth = 0;
-
-    let index = (row * 3 + part * 5) % words.length;
-
-    while (true) {
-
-      const word = words[index];
-      const wordWidth = ctx.measureText(word).width;
-
-      if (totalWidth + wordWidth > width) break;
-
-      currentWords.push({
-        word,
-        width: wordWidth
-      });
-
-      totalWidth += wordWidth + gap;
-
-      index = (index + 1) % words.length;
-    }
-
-    if (currentWords.length === 0) return;
-
-    totalWidth -= gap;
-
-    // Ortala
-    let x = left + (width - totalWidth) / 2;
-
-    currentWords.forEach((item, i) => {
-
-      const color = i % 3 === 0
-        ? "#ff8acb"
-        : "#ffb0dd";
-
-      ctx.fillStyle = color;
-      ctx.shadowColor = "#ff1493";
-      ctx.shadowBlur = 10;
-
-      ctx.fillText(item.word, x, y);
-
-      x += item.width + gap;
-    });
-
-  });
+  return a * a * a -
+    px * px * py * py * py <= 0;
 }
 
 function draw() {
-
   ctx.setTransform(3, 0, 0, 3, 0, 0);
-
   ctx.clearRect(0, 0, W, H);
 
   ctx.textBaseline = "middle";
   ctx.textAlign = "left";
 
-  // Satırları kalbin şekline göre oluştur
   let row = 0;
 
-  for (let y = 24; y < 510; y += 17) {
-    drawLine(y, row);
+  // Küçük aralıklarla tarama: kalbin tamamını doldur
+  for (let y = 30; y < 500; y += 10) {
+
+    let start = -1;
+    let inside = false;
+
+    for (let x = 0; x <= W; x += 1) {
+
+      const current = insideHeart(x, y);
+
+      if (current && !inside) {
+        start = x;
+        inside = true;
+      }
+
+      if ((!current || x === W) && inside) {
+
+        const end = x;
+        const width = end - start;
+
+        if (width > 12) {
+
+          let fontSize = 12;
+
+          if (width < 65) fontSize = 8;
+          else if (width < 100) fontSize = 10;
+          else if (width > 350) fontSize = 14;
+
+          ctx.font = `bold ${fontSize}px Arial`;
+
+          const gap = 3;
+          const selected = [];
+
+          let total = 0;
+          let index = (row * 7) % words.length;
+
+          while (index < words.length * 3) {
+
+            const word = words[index % words.length];
+            const wordWidth = ctx.measureText(word).width;
+
+            if (total + wordWidth > width) break;
+
+            selected.push({
+              word: word,
+              width: wordWidth
+            });
+
+            total += wordWidth + gap;
+            index++;
+          }
+
+          if (selected.length) {
+
+            total -= gap;
+
+            // Satırı tam ortala
+            let pos = start + (width - total) / 2;
+
+            selected.forEach((item, i) => {
+
+              ctx.fillStyle =
+                i % 3 === 0 ? "#ff4eae" :
+                i % 3 === 1 ? "#ff91d0" :
+                "#ffd0ec";
+
+              ctx.shadowColor = "#ff1493";
+              ctx.shadowBlur = 12;
+
+              ctx.fillText(item.word, pos, y);
+
+              pos += item.width + gap;
+            });
+          }
+        }
+
+        inside = false;
+      }
+    }
+
     row++;
   }
 
@@ -262,7 +231,6 @@ function draw() {
 }
 
 draw();
-
 </script>
 
 </body>
