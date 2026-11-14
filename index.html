@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NUR</title>
+<title>NUR | Love</title>
 
 <style>
 * {
@@ -14,11 +14,13 @@
 }
 
 body {
-  background: #050505;
-  min-height: 100vh;
+  width: 100%;
+  height: 100vh;
+  background: radial-gradient(ellipse at center,
+    #180511 0%, #090309 55%, #030203 100%);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   overflow: hidden;
   font-family: Arial, sans-serif;
 }
@@ -27,15 +29,14 @@ body {
   position: fixed;
   inset: 0;
   background-image: radial-gradient(#ffffff55 1px, transparent 1px);
-  background-size: 38px 38px;
-  opacity: .2;
+  background-size: 42px 42px;
+  opacity: .22;
 }
 
 .wrapper {
-  width: 100%;
-  max-width: 650px;
+  width: min(96vw, 620px);
   position: relative;
-  animation: beat 1.5s infinite;
+  animation: heartbeat 2s ease-in-out infinite;
 }
 
 canvas {
@@ -46,23 +47,33 @@ canvas {
 
 .name {
   position: absolute;
-  top: 49%;
   left: 50%;
+  top: 49%;
   transform: translate(-50%, -50%);
-  color: #fff;
-  font-size: clamp(35px, 10vw, 65px);
+  font-size: clamp(36px, 10vw, 66px);
   font-weight: 900;
-  letter-spacing: 8px;
-  text-shadow: 0 0 12px #ff6040, 0 0 30px #ff174f;
+  letter-spacing: 9px;
+  color: white;
+  text-shadow:
+    0 0 5px white,
+    0 0 15px #ff1493,
+    0 0 30px #ff1493,
+    0 0 60px #ff1493;
+  z-index: 5;
   pointer-events: none;
+  animation: nameGlow 2s infinite alternate;
 }
 
-@keyframes beat {
+@keyframes heartbeat {
   0%,100% { transform: scale(1); }
-  15% { transform: scale(1.025); }
-  30% { transform: scale(1); }
-  45% { transform: scale(1.018); }
-  60% { transform: scale(1); }
+  20% { transform: scale(1.025); }
+  40% { transform: scale(1); }
+  60% { transform: scale(1.015); }
+}
+
+@keyframes nameGlow {
+  from { opacity: .85; }
+  to { opacity: 1; }
 }
 </style>
 </head>
@@ -72,92 +83,186 @@ canvas {
 <div class="stars"></div>
 
 <div class="wrapper">
-  <canvas id="canvas" width="600" height="540"></canvas>
+  <canvas id="heart" width="1800" height="1620"></canvas>
   <div class="name">NUR</div>
 </div>
 
 <script>
-const canvas = document.getElementById("canvas");
+
+const canvas = document.getElementById("heart");
 const ctx = canvas.getContext("2d");
 
+const W = 600;
+const H = 540;
+
 const words = [
-"Seni seviyorum",
-"I love you",
-"Je t'aime",
-"Te amo",
-"Ich liebe dich",
-"Ti amo",
-"Я тебя люблю",
-"愛してる",
-"사랑해",
-"我爱你",
-"Eu te amo",
-"Ik hou van jou",
-"أحبك",
-"Anh yêu em",
-"Jag älskar dig",
-"Kocham cię",
-"Σ' αγαπώ",
-"Volim te",
-"Nakupenda",
-"Te quiero",
-"Miluji tě",
-"Të dua",
-"Minä rakastan sinua",
-"Szeretlek"
+ "Seni seviyorum",
+ "I love you",
+ "Je t'aime",
+ "Te amo",
+ "Ich liebe dich",
+ "Ti amo",
+ "Я тебя люблю",
+ "愛してる",
+ "사랑해",
+ "我爱你",
+ "Eu te amo",
+ "Ik hou van jou",
+ "أحبك",
+ "Anh yêu em",
+ "Jag älskar dig",
+ "Kocham cię",
+ "Σ' αγαπώ",
+ "Volim te",
+ "Nakupenda",
+ "Te quiero",
+ "Miluji tě",
+ "Të dua",
+ "Minä rakastan sinua",
+ "Szeretlek",
+ "Maite zaitut",
+ "Seni sevirem",
+ "Aishiteru"
 ];
 
-const path = new Path2D();
+// Kalbin geometrisi
+const heart = new Path2D();
 
-path.moveTo(300, 490);
-path.bezierCurveTo(245, 430, 35, 300, 35, 165);
-path.bezierCurveTo(35, 55, 175, 5, 300, 145);
-path.bezierCurveTo(425, 5, 565, 55, 565, 165);
-path.bezierCurveTo(565, 300, 355, 430, 300, 490);
-path.closePath();
+heart.moveTo(300, 490);
 
-function draw() {
-  ctx.clearRect(0, 0, 600, 540);
+heart.bezierCurveTo(
+  245, 430,
+  35, 300,
+  35, 165
+);
 
-  ctx.save();
+heart.bezierCurveTo(
+  35, 55,
+  175, 5,
+  300, 145
+);
 
-  // Yalnızca kalbin içindeki yazıları göster
-  ctx.clip(path);
+heart.bezierCurveTo(
+  425, 5,
+  565, 55,
+  565, 165
+);
 
-  ctx.font = "bold 12px Arial";
-  ctx.textBaseline = "middle";
-  ctx.textAlign = "left";
+heart.bezierCurveTo(
+  565, 300,
+  355, 430,
+  300, 490
+);
 
-  let row = 0;
+heart.closePath();
 
-  for (let y = 20; y < 520; y += 16) {
-    let text = "";
-    let index = row % words.length;
+// Kelimeleri kırpmadan yerleştir
+function drawLine(y, row) {
 
-    while (text.length < 250) {
-      text += words[index] + "     ";
+  const intervals = [];
+  let inside = false;
+  let start = 0;
+
+  // Kalbin o satırdaki dolu bölgelerini bul
+  for (let x = 0; x <= W; x += 2) {
+
+    const current = ctx.isPointInPath(heart, x, y);
+
+    if (current && !inside) {
+      start = x;
+      inside = true;
+    }
+
+    if (!current && inside) {
+      intervals.push([start, x]);
+      inside = false;
+    }
+  }
+
+  if (inside) intervals.push([start, W]);
+
+  // Her bölgeye tam kelimeler yerleştir
+  intervals.forEach(([left, right], part) => {
+
+    const width = right - left;
+
+    if (width < 35) return;
+
+    const fontSize = width < 85 ? 10 : 13;
+
+    ctx.font = `bold ${fontSize}px Arial`;
+
+    const gap = fontSize < 12 ? 7 : 9;
+
+    let currentWords = [];
+    let totalWidth = 0;
+
+    let index = (row * 3 + part * 5) % words.length;
+
+    while (true) {
+
+      const word = words[index];
+      const wordWidth = ctx.measureText(word).width;
+
+      if (totalWidth + wordWidth > width) break;
+
+      currentWords.push({
+        word,
+        width: wordWidth
+      });
+
+      totalWidth += wordWidth + gap;
+
       index = (index + 1) % words.length;
     }
 
-    ctx.fillStyle = row % 2 === 0 ? "#ff755f" : "#ff9970";
-    ctx.shadowColor = "#ff452f";
-    ctx.shadowBlur = 7;
+    if (currentWords.length === 0) return;
 
-    ctx.fillText(text, row % 2 === 0 ? 0 : -60, y);
+    totalWidth -= gap;
 
+    // Ortala
+    let x = left + (width - totalWidth) / 2;
+
+    currentWords.forEach((item, i) => {
+
+      const color = i % 3 === 0
+        ? "#ff8acb"
+        : "#ffb0dd";
+
+      ctx.fillStyle = color;
+      ctx.shadowColor = "#ff1493";
+      ctx.shadowBlur = 10;
+
+      ctx.fillText(item.word, x, y);
+
+      x += item.width + gap;
+    });
+
+  });
+}
+
+function draw() {
+
+  ctx.setTransform(3, 0, 0, 3, 0, 0);
+
+  ctx.clearRect(0, 0, W, H);
+
+  ctx.textBaseline = "middle";
+  ctx.textAlign = "left";
+
+  // Satırları kalbin şekline göre oluştur
+  let row = 0;
+
+  for (let y = 24; y < 510; y += 17) {
+    drawLine(y, row);
     row++;
   }
 
-  // Dış çizgi YOK
-  ctx.restore();
+  ctx.shadowBlur = 0;
 }
 
-function animate() {
-  draw();
-  requestAnimationFrame(animate);
-}
+draw();
 
-animate();
 </script>
 
 </body>
