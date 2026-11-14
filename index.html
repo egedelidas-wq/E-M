@@ -3,105 +3,72 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NUR ❤️</title>
 
 <style>
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    min-height: 100vh;
-    background: #080609;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    font-family: Arial, sans-serif;
+  background: #090309;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
 }
 
 .stars {
-    position: fixed;
-    inset: 0;
-    background-image:
-    radial-gradient(#ffffff55 1px, transparent 1px);
-    background-size: 38px 38px;
-    opacity: .35;
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(#ffffff55 1px, transparent 1px);
+  background-size: 35px 35px;
+  opacity: .3;
 }
 
-.container {
-    width: 100%;
-    max-width: 600px;
-    padding: 12px;
-    position: relative;
-    z-index: 2;
+.wrapper {
+  width: 100%;
+  max-width: 650px;
+  position: relative;
+  animation: heartbeat 1.5s infinite;
+  filter: drop-shadow(0 0 12px #ff174f);
 }
 
-.heart {
-    width: 100%;
-    position: relative;
-    animation: float 3s ease-in-out infinite;
-    filter: drop-shadow(0 0 12px #ff174c);
-}
-
-.line {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 2px auto;
-    height: 17px;
-    overflow: visible;
-    white-space: nowrap;
-    color: #ff858f;
-    font-size: clamp(7px, 1.8vw, 11px);
-    font-weight: bold;
-    text-shadow:
-        0 0 5px #ff244f,
-        0 0 12px #ff174c;
-    animation: glow 2s ease-in-out infinite alternate;
-}
-
-.line span {
-    display: inline-block;
-    white-space: pre;
+canvas {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .name {
-    position: absolute;
-    top: 49%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: clamp(30px, 9vw, 48px);
-    font-weight: 900;
-    letter-spacing: 8px;
-    text-shadow:
-        0 0 8px white,
-        0 0 20px #ff174c,
-        0 0 40px #ff174c;
-    z-index: 5;
-    animation: nameGlow 1.5s infinite alternate;
-    pointer-events: none;
+  position: absolute;
+  top: 49%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: clamp(35px, 10vw, 65px);
+  font-weight: 900;
+  letter-spacing: 8px;
+  text-shadow:
+    0 0 8px white,
+    0 0 20px #ff174f,
+    0 0 40px #ff174f;
+  z-index: 3;
+  pointer-events: none;
 }
 
-@keyframes float {
-    0%,100% { transform: scale(1); }
-    50% { transform: scale(1.025); }
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  15% { transform: scale(1.035); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.025); }
+  60% { transform: scale(1); }
 }
-
-@keyframes glow {
-    from { opacity: .65; }
-    to { opacity: 1; }
-}
-
-@keyframes nameGlow {
-    from { text-shadow: 0 0 10px white, 0 0 20px #ff174c; }
-    to { text-shadow: 0 0 20px white, 0 0 45px #ff174c; }
-}
-
 </style>
 </head>
 
@@ -109,73 +76,108 @@ body {
 
 <div class="stars"></div>
 
-<div class="container">
-    <div class="heart" id="heart"></div>
-    <div class="name">NUR</div>
+<div class="wrapper">
+  <canvas id="canvas" width="600" height="540"></canvas>
+  <div class="name">NUR</div>
 </div>
 
 <script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
 const words = [
-    "Seni seviyorum",
-    "I love you",
-    "Je t'aime",
-    "Te amo",
-    "Ich liebe dich",
-    "Ti amo",
-    "Я тебя люблю",
-    "愛してる",
-    "사랑해",
-    "我爱你",
-    "Eu te amo",
-    "Ik hou van jou",
-    "أحبك",
-    "Aşkım",
-    "Saranghae",
-    "Kocham cię",
-    "Σ' αγαπώ",
-    "Anh yêu em",
-    "Jag älskar dig",
-    "Volim te",
-    "Nakupenda",
-    "Ya tebya lyublyu",
-    "Minä rakastan sinua",
-    "Te quiero",
-    "Miluji tě",
-    "Të dua",
-    "Aroha ahau ki a koe"
+ "Seni seviyorum",
+ "I love you",
+ "Je t'aime",
+ "Te amo",
+ "Ich liebe dich",
+ "Ti amo",
+ "Я тебя люблю",
+ "愛してる",
+ "사랑해",
+ "我爱你",
+ "Eu te amo",
+ "Ik hou van jou",
+ "أحبك",
+ "Anh yêu em",
+ "Jag älskar dig",
+ "Kocham cię",
+ "Σ' αγαπώ",
+ "Volim te",
+ "Nakupenda",
+ "Te quiero",
+ "Miluji tě",
+ "Të dua",
+ "Aroha ahau ki a koe",
+ "Minä rakastan sinua",
+ "Szeretlek",
+ "Seni sevirem",
+ "Maite zaitut",
+ "Ya tebya lyublyu"
 ];
 
-const heart = document.getElementById("heart");
+const path = new Path2D();
 
-const widths = [
-    35, 52, 65, 76, 86,
-    94, 100, 100, 100, 98,
-    94, 90, 84, 77, 69,
-    61, 53, 45, 37, 29,
-    21, 14, 8
-];
+path.moveTo(300, 490);
+path.bezierCurveTo(245, 430, 35, 300, 35, 165);
+path.bezierCurveTo(35, 55, 175, 5, 300, 145);
+path.bezierCurveTo(425, 5, 565, 55, 565, 165);
+path.bezierCurveTo(565, 300, 355, 430, 300, 490);
+path.closePath();
 
-widths.forEach((width, row) => {
+function draw() {
+  ctx.clearRect(0, 0, 600, 540);
 
-    const line = document.createElement("div");
-    line.className = "line";
-    line.style.width = width + "%";
+  // Yazıları yalnızca kalp şeklinin içine çiz
+  ctx.save();
+  ctx.clip(path);
 
-    let content = "";
-    let index = row % words.length;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+  ctx.font = "bold 12px Arial";
 
-    while (content.length < 250) {
-        content += words[index] + "   ";
-        index = (index + 1) % words.length;
+  let row = 0;
+
+  for (let y = 30; y < 500; y += 15) {
+
+    let text = "";
+    let i = row % words.length;
+
+    while (text.length < 250) {
+      text += words[i] + "     ";
+      i = (i + 1) % words.length;
     }
 
-    line.textContent = content;
+    const offset = row % 2 === 0 ? 0 : -70;
 
-    heart.appendChild(line);
+    ctx.fillStyle = "#ff9cac";
+    ctx.shadowColor = "#ff174f";
+    ctx.shadowBlur = 9;
 
-});
+    ctx.fillText(text, offset, y);
 
+    row++;
+  }
+
+  ctx.restore();
+
+  // Kalbin ince parlak dış çizgisi
+  ctx.save();
+  ctx.strokeStyle = "#ff6388";
+  ctx.lineWidth = 2;
+  ctx.shadowColor = "#ff174f";
+  ctx.shadowBlur = 18;
+  ctx.stroke(path);
+  ctx.restore();
+}
+
+// Animasyonlu parlama
+function animate() {
+  draw();
+  requestAnimationFrame(animate);
+}
+
+animate();
 </script>
 
 </body>
