@@ -1,141 +1,237 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>I Love You - NUR</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        html, body {
-            width: 100%;
-            height: 100%;
-            background: #000;
-            overflow: hidden;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-        canvas {
-            display: block;
-            width: 100vw;
-            height: 100vh;
-            background: #000;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NUR ❤️</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+    background: radial-gradient(circle, #310817, #10020a 70%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+.stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+    radial-gradient(white 1px, transparent 1px);
+    background-size: 45px 45px;
+    opacity: .25;
+}
+
+.scene {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.heart-container {
+    position: relative;
+    width: 210px;
+    height: 210px;
+    z-index: 5;
+    animation: heartbeat 1.3s infinite;
+    filter: drop-shadow(0 0 15px #ff1764)
+            drop-shadow(0 0 35px #ff1764);
+}
+
+.heart {
+    width: 100%;
+    height: 100%;
+}
+
+.heart-name {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: 5px;
+    color: white;
+    text-shadow: 0 0 12px #ff80ac,
+                 0 0 25px #ff1764;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    15% { transform: scale(1.13); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.09); }
+    60% { transform: scale(1); }
+}
+
+.orbit {
+    position: absolute;
+    width: min(94vw, 430px);
+    height: min(94vw, 430px);
+    border-radius: 50%;
+    animation: rotate 35s linear infinite;
+}
+
+.orbit.second {
+    width: min(99vw, 470px);
+    height: min(99vw, 470px);
+    animation: rotateReverse 45s linear infinite;
+}
+
+.word {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    white-space: nowrap;
+    color: #ffb5d0;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 0 0 10px #ff1764;
+    transform:
+      rotate(var(--angle))
+      translateY(calc(var(--radius) * -1));
+    transform-origin: 0 0;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes rotateReverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+}
+
+.bottom-text {
+    position: absolute;
+    bottom: 9%;
+    font-size: 16px;
+    letter-spacing: 3px;
+    color: #ffb4d0;
+    text-shadow: 0 0 15px #ff1764;
+    animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+    from { opacity: .5; }
+    to { opacity: 1; }
+}
+
+</style>
 </head>
+
 <body>
-    <canvas id="c"></canvas>
 
-    <script>
-        const canvas = document.getElementById('c');
-        const ctx = canvas.getContext('2d');
+<div class="stars"></div>
 
-        let W, H, scale;
-        const points = [];
+<div class="scene">
 
-        function resize() {
-            W = canvas.width = window.innerWidth;
-            H = canvas.height = window.innerHeight;
-            scale = Math.min(W, H) / 480;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+    <div class="orbit" id="orbit1"></div>
+    <div class="orbit second" id="orbit2"></div>
 
-        // Kalp formülü ile tüm noktaları hemen oluştur
-        function createHeart() {
-            points.length = 0;
-            for (let i = 0; i < 360; i += 1.8) {
-                const t = i * Math.PI / 180;
-                const x = 16 * Math.pow(Math.sin(t), 3);
-                const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+    <div class="heart-container">
 
-                // Birkaç katman (derinlik hissi için)
-                for (let z = -14; z <= 14; z += 7) {
-                    points.push({
-                        x: x * 11.5,
-                        y: y * 11.5,
-                        z: z,
-                        text: "I love you"
-                    });
-                }
-            }
-        }
-        createHeart();
+        <svg class="heart" viewBox="0 0 200 200">
+            <path
+              d="M100 175
+              C80 155 15 110 15 65
+              C15 15 75 5 100 50
+              C125 5 185 15 185 65
+              C185 110 120 155 100 175Z"
+              fill="#ff174f"
+              stroke="#ff9ab9"
+              stroke-width="2"/>
+        </svg>
 
-        let time = 0;
+        <div class="heart-name">NUR</div>
 
-        function draw() {
-            ctx.fillStyle = "#000";
-            ctx.fillRect(0, 0, W, H);
+    </div>
 
-            time += 0.014;
+    <div class="bottom-text">
+        FOREVER IN MY HEART ♡
+    </div>
 
-            const rotY = time * 1.1;
-            const rotX = Math.sin(time * 0.35) * 0.3;
+</div>
 
-            const cosY = Math.cos(rotY);
-            const sinY = Math.sin(rotY);
-            const cosX = Math.cos(rotX);
-            const sinX = Math.sin(rotX);
+<script>
 
-            // 3D dönüş + perspektif
-            const projected = points.map(p => {
-                // Y ekseni etrafında dön
-                let x1 = p.x * cosY - p.z * sinY;
-                let z1 = p.x * sinY + p.z * cosY;
-                let y1 = p.y;
+const languages = [
+" I LOVE YOU ❤️ ",
+" SENİ SEVİYORUM ❤️ ",
+" JE T'AIME ❤️ ",
+" TE AMO ❤️ ",
+" ICH LIEBE DICH ❤️ ",
+" TI AMO ❤️ ",
+" Я ТЕБЯ ЛЮБЛЮ ❤️ ",
+" 愛してる ❤️ ",
+" 사랑해 ❤️ ",
+" أحبك ❤️ ",
+" मैं तुमसे प्यार करता हूँ ❤️ ",
+" 我爱你 ❤️ ",
+" EU TE AMO ❤️ ",
+" IK HOU VAN JOU ❤️ ",
+" Σ'ΑΓΑΠΩ ❤️ ",
+" MINÄ RAKASTAN SINUA ❤️ ",
+" JAG ÄLSKAR DIG ❤️ ",
+" JEG ELSKER DEG ❤️ ",
+" KOCHAM CIĘ ❤️ ",
+" MILUJI TĚ ❤️ ",
+" TE QUIERO ❤️ ",
+" VOLIM TE ❤️ ",
+" SZERETLEK ❤️ ",
+" TË DUA ❤️ ",
+" MAITE ZAITUT ❤️ ",
+" AISHITERU ❤️ ",
+" SARANGHAE ❤️ ",
+" NAKUPENDA ❤️ ",
+" ANI OHEV OTACH ❤️ ",
+" T'AMO ❤️ ",
+" LOVE YOU ❤️ ",
+" EU TE AMO MUITO ❤️ ",
+" YA LYUBLYU TEBYA ❤️ ",
+" MOHABBAT KARTI HOON ❤️ ",
+" SENI SEVIRIM ❤️ ",
+" AROHA ANA AU KI A KOE ❤️ ",
+" NGIYAKUTHANDA ❤️ ",
+" TE SAKAM ❤️ "
+];
 
-                // X ekseni etrafında hafif sallanma
-                let y2 = y1 * cosX - z1 * sinX;
-                let z2 = y1 * sinX + z1 * cosX;
+function createOrbit(id, radius) {
+    const orbit = document.getElementById(id);
 
-                return {
-                    x: x1,
-                    y: y2,
-                    z: z2,
-                    text: p.text
-                };
-            });
+    languages.forEach((word, i) => {
+        const span = document.createElement("span");
+        span.className = "word";
+        span.textContent = word;
 
-            // Uzaktakileri arkaya koy
-            projected.sort((a, b) => b.z - a.z);
+        const angle = (360 / languages.length) * i;
 
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
+        span.style.setProperty("--angle", angle + "deg");
+        span.style.setProperty("--radius", radius + "px");
 
-            for (const p of projected) {
-                const perspective = 380 / (380 + p.z);
-                const px = W / 2 + p.x * scale * perspective;
-                const py = H / 2 + p.y * scale * perspective;
+        orbit.appendChild(span);
+    });
+}
 
-                // Derinliğe göre parlaklık
-                let light = 90 - (p.z / 40) * 30;
-                light = Math.max(40, Math.min(100, light));
+createOrbit("orbit1", 135);
+createOrbit("orbit2", 185);
 
-                ctx.fillStyle = `hsl(345, 100%, ${light}%)`;
-                const size = Math.max(5, 7.5 * scale * perspective);
-                ctx.font = `bold ${size}px Arial`;
-                ctx.fillText(p.text, px, py);
-            }
+</script>
 
-            // ===== Ortadaki NUR =====
-            ctx.save();
-            ctx.shadowColor = "#ff2d55";
-            ctx.shadowBlur = 28;
-            ctx.fillStyle = "#ffffff";
-            ctx.font = `bold ${Math.round(52 * scale)}px Arial`;
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText("NUR", W / 2, H / 2);
-            ctx.restore();
-
-            requestAnimationFrame(draw);
-        }
-
-        // Başlat
-        draw();
-    </script>
 </body>
 </html>
