@@ -3,8 +3,8 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NUR ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NUR</title>
 
 <style>
 * {
@@ -14,8 +14,8 @@
 }
 
 body {
-  background: #090309;
-  height: 100vh;
+  background: #050505;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,16 +27,15 @@ body {
   position: fixed;
   inset: 0;
   background-image: radial-gradient(#ffffff55 1px, transparent 1px);
-  background-size: 35px 35px;
-  opacity: .3;
+  background-size: 38px 38px;
+  opacity: .2;
 }
 
 .wrapper {
   width: 100%;
   max-width: 650px;
   position: relative;
-  animation: heartbeat 1.5s infinite;
-  filter: drop-shadow(0 0 12px #ff174f);
+  animation: beat 1.5s infinite;
 }
 
 canvas {
@@ -50,23 +49,19 @@ canvas {
   top: 49%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: white;
+  color: #fff;
   font-size: clamp(35px, 10vw, 65px);
   font-weight: 900;
   letter-spacing: 8px;
-  text-shadow:
-    0 0 8px white,
-    0 0 20px #ff174f,
-    0 0 40px #ff174f;
-  z-index: 3;
+  text-shadow: 0 0 12px #ff6040, 0 0 30px #ff174f;
   pointer-events: none;
 }
 
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  15% { transform: scale(1.035); }
+@keyframes beat {
+  0%,100% { transform: scale(1); }
+  15% { transform: scale(1.025); }
   30% { transform: scale(1); }
-  45% { transform: scale(1.025); }
+  45% { transform: scale(1.018); }
   60% { transform: scale(1); }
 }
 </style>
@@ -86,34 +81,30 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 const words = [
- "Seni seviyorum",
- "I love you",
- "Je t'aime",
- "Te amo",
- "Ich liebe dich",
- "Ti amo",
- "Я тебя люблю",
- "愛してる",
- "사랑해",
- "我爱你",
- "Eu te amo",
- "Ik hou van jou",
- "أحبك",
- "Anh yêu em",
- "Jag älskar dig",
- "Kocham cię",
- "Σ' αγαπώ",
- "Volim te",
- "Nakupenda",
- "Te quiero",
- "Miluji tě",
- "Të dua",
- "Aroha ahau ki a koe",
- "Minä rakastan sinua",
- "Szeretlek",
- "Seni sevirem",
- "Maite zaitut",
- "Ya tebya lyublyu"
+"Seni seviyorum",
+"I love you",
+"Je t'aime",
+"Te amo",
+"Ich liebe dich",
+"Ti amo",
+"Я тебя люблю",
+"愛してる",
+"사랑해",
+"我爱你",
+"Eu te amo",
+"Ik hou van jou",
+"أحبك",
+"Anh yêu em",
+"Jag älskar dig",
+"Kocham cię",
+"Σ' αγαπώ",
+"Volim te",
+"Nakupenda",
+"Te quiero",
+"Miluji tě",
+"Të dua",
+"Minä rakastan sinua",
+"Szeretlek"
 ];
 
 const path = new Path2D();
@@ -128,50 +119,39 @@ path.closePath();
 function draw() {
   ctx.clearRect(0, 0, 600, 540);
 
-  // Yazıları yalnızca kalp şeklinin içine çiz
   ctx.save();
+
+  // Yalnızca kalbin içindeki yazıları göster
   ctx.clip(path);
 
-  ctx.textAlign = "left";
-  ctx.textBaseline = "middle";
   ctx.font = "bold 12px Arial";
+  ctx.textBaseline = "middle";
+  ctx.textAlign = "left";
 
   let row = 0;
 
-  for (let y = 30; y < 500; y += 15) {
-
+  for (let y = 20; y < 520; y += 16) {
     let text = "";
-    let i = row % words.length;
+    let index = row % words.length;
 
     while (text.length < 250) {
-      text += words[i] + "     ";
-      i = (i + 1) % words.length;
+      text += words[index] + "     ";
+      index = (index + 1) % words.length;
     }
 
-    const offset = row % 2 === 0 ? 0 : -70;
+    ctx.fillStyle = row % 2 === 0 ? "#ff755f" : "#ff9970";
+    ctx.shadowColor = "#ff452f";
+    ctx.shadowBlur = 7;
 
-    ctx.fillStyle = "#ff9cac";
-    ctx.shadowColor = "#ff174f";
-    ctx.shadowBlur = 9;
-
-    ctx.fillText(text, offset, y);
+    ctx.fillText(text, row % 2 === 0 ? 0 : -60, y);
 
     row++;
   }
 
-  ctx.restore();
-
-  // Kalbin ince parlak dış çizgisi
-  ctx.save();
-  ctx.strokeStyle = "#ff6388";
-  ctx.lineWidth = 2;
-  ctx.shadowColor = "#ff174f";
-  ctx.shadowBlur = 18;
-  ctx.stroke(path);
+  // Dış çizgi YOK
   ctx.restore();
 }
 
-// Animasyonlu parlama
 function animate() {
   draw();
   requestAnimationFrame(animate);
